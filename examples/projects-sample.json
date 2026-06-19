@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "name": "YNWELC",
+    "kicker": "COSMOS TRAVELER // DIGITAL ARCHITECT",
+    "headline": "// HELLO WORLD",
+    "description": "欢迎来到我的个人数字星图。在这里，我将通过不同维度的轨道展示我的技术栈、核心项目实践以及开发探索历程。",
+    "github_url": "https://github.com/ynwelc",
+    "location": "地球 / 轨道 01"
+  },
+  "projects": [
+    {
+      "id": "nexus",
+      "title": "AutoCode-Nexus",
+      "subtitle": "基于 LangGraph4j 编排的 AI 全链路代码验证平台",
+      "tagline": "WORKFLOW ORCHESTRATION",
+      "animation_type": "auto",
+      "tags": ["Java 21", "Spring Boot", "LangGraph4j", "Vue 3"],
+      "github_url": "https://github.com/ynwelc/AutoCode-Nexus",
+      "description": "解决自动生成代码的编译与质量痛点，通过 LangGraph4j 编排多节点闭环，SSE 实时流式推送编译状态并完成语法与测试修复。",
+      "visual_panel": {
+        "type": "sequence",
+        "title": "LANGGRAPH4J WORKFLOW NODES",
+        "steps": [
+          "Image Collector Node - Concurrent asset gathering",
+          "Prompt Enhancer Node - Metadata injection & formatting",
+          "Execution Router Node - Dispatches code compiling flows"
+        ]
+      }
+    },
+    {
+      "id": "tender",
+      "title": "Tender-Agent",
+      "subtitle": "面向海量技术标书并发生成的 Multi-Agent 流式编写引擎",
+      "tagline": "CONCURRENT BIDDING AGENT",
+      "animation_type": "tender",
+      "tags": ["Java 21", "Spring Boot", "LangChain4j", "Virtual Threads"],
+      "github_url": "https://github.com/ynwelc/tender-agent",
+      "description": "利用 Java 21 虚拟线程并发向大模型分发 5 章节标书编写任务，耗时由 30 分钟压缩至 1 分钟，全流程 SSE 动态流式推送。",
+      "visual_panel": {
+        "type": "threads",
+        "title": "VIRTUAL THREADS CONCURRENCY RENDER",
+        "threads": [
+          { "name": "Thread-1 (Chapter 1 Generate)", "status": "COMPLETED" },
+          { "name": "Thread-2 (Chapter 2 Generate)", "status": "COMPLETED" },
+          { "name": "Thread-3 (Chapter 3 Generate)", "status": "COMPLETED" }
+        ]
+      }
+    },
+    {
+      "id": "skinsage",
+      "title": "SkinSage",
+      "subtitle": "基于 BGE-M3 与 ChromaDB 向量检索的美业智能问答系统",
+      "tagline": "VERTICALLY RAG SYSTEMS",
+      "animation_type": "skin",
+      "tags": ["FastAPI", "ChromaDB", "DeepSeek", "BGE-M3"],
+      "github_url": "https://github.com/ynwelc/SkinSage",
+      "description": "PDF/Word 智能语义检索与增强，Top-K ChromaDB 向量块比对，DeepSeek-V3 溯源渲染，支持多轮对话与流式打字机响应。",
+      "visual_panel": {
+        "type": "chat",
+        "title": "KNOWLEDGE RAG CHAT PREVIEW",
+        "chat": [
+          { "role": "user", "text": "敏感肌可以使用含水杨酸的产品吗？" },
+          { "role": "bot", "text": "建议避免高浓度使用。检索文档《美妆敏感肌防护指南》评分 0.92：水杨酸会剥脱角质，加重脆弱表皮受损。" }
+        ]
+      }
+    }
+  ],
+  "control_room": {
+    "title": "太空控制室 · 开发历程足迹",
+    "subtitle": "记录本地运行核心开发套件与工具链的历史性调试节点",
+    "slides": [
+      { "image": "picture/agy-cli.png", "caption": "第一次成功在本地运行起来 Antigravity CLI 时的调试截图" },
+      { "image": "picture/claude-code-cli.png", "caption": "第一次本地成功运行起来 Claude Code CLI 进行代码修改的截图" }
+    ]
+  }
+}
