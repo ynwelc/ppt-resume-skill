@@ -34,8 +34,8 @@ Collect or extract the following content from the user's workspace (e.g. README 
 - **Control Room Slides**: Collect list of local screenshots, terminal capture pictures, or milestones to play back in the virtual console slide.
 
 ### 3. Customize and Fill the Boilerplate
-Modify the boilerplate to generate the final single-file `index.html`:
-- **Populate Slides HTML**: Insert the gathered project data into Slide 1 to 6 inside `<div id="deck">`.
+To prevent LLM network timeouts and token limit truncations, you MUST split the generated output into a multi-file structure (`index.html`, `styles.css`, `script.js`):
+- **Populate Slides HTML**: Insert the gathered project data into Slide 1 to 6 inside `<div id="deck">` in `index.html`.
 - **Match Animation Overlays**: Inject visual elements (such as orbit dots, sparkles, chat bubbles, or scan lines) matching the references inside each project's `.glass-card`.
 - **Set Up Side Panels**: Build the right-side visualizers (sequence flows, thread execution rows, terminal commands, or vector databases) to reflect the project's core functionality.
 - **Configure Canvas Background**: Tweak the Space Background canvas engine variables (star count, camera coordinates, rotation speed, focal point offsets) to match the project's visual hierarchy.
@@ -71,3 +71,27 @@ The generated presentation site must support:
 - **Touch Swipe Gestures**: Touch start/end coordinates tracking horizontal delta sweeps.
 - **Holographic HUD Widget**: Fixed header widget showing orbiting statuses, theme toggle button, and a Grid Index modal navigation toggle button.
 - **ESC System Index Grid**: A fullscreen overlay showing preview cards of all slides. Selecting a card jumps to the corresponding page.
+
+---
+
+## Developer Notes: Problems & Solutions (开发复盘与避坑指南)
+
+This section records the core technical challenges encountered during the creation of this skill framework and how they were resolved. It serves as historical context to ensure the stability of the generated templates.
+
+1. **Problem**: Implementing smooth, pure-frontend cross-platform horizontal scrolling.
+   **Solution**: Engineered a unified gesture and event listening system in `deck-boilerplate.html`. Intercepted `keydown`, `wheel`, and `touchstart/touchend` events, accumulating scroll vectors and converting them into `transform: translateX` translations with `cubic-bezier` easing.
+
+2. **Problem**: Adapting to dark and light modes seamlessly while maintaining glassmorphism aesthetics.
+   **Solution**: Built a CSS Variables-based dynamic color mapping system (`--bg-dark`, `--glow-cyan`, `--card-bg`). Toggling the `.light-theme` class on the body switches the deep cosmic dark backgrounds to high-contrast paper-light tones and soft shadows seamlessly.
+
+3. **Problem**: Providing differentiated visual feedback for various tech-stack projects to avoid template monotony.
+   **Solution**: Designed a data-driven micro-animation system. HTML `data-project` attributes map directly to predefined CSS Keyframes (e.g., `scan-line` for Auto-Gen, `orbit` for Multi-Agent, `sparkle` for RAG), triggering on card hover.
+
+4. **Problem**: Preventing users from getting lost in a long horizontal sequence.
+   **Solution**: Developed dual navigation systems: A fixed Holographic HUD at the top right, and a global ESC System Index Grid. Pressing ESC overlays a frosted-glass grid of all slide preview cards for one-click direct jumping.
+
+5. **Problem**: Ensuring the AI consistently generates complex nested DOM structures without omitting animations or layouts.
+   **Solution**: Established a strict 4-step workflow in `SKILL.md` that separates "reading the boilerplate" from "gathering user data", and strictly matches the structured schema in `projects-sample.json`.
+
+6. **Problem**: Expanding the framework to support multi-file outputs (HTML, CSS, JS separated) and alternative themes (e.g., Map Exploration).
+   **Solution**: Updated the generation workflow to allow splitting the boilerplate into `index.html`, `styles.css`, and `script.js`. Handled the dynamic "Map Explore" theme by completely rewriting the Canvas background engine into a panning latitude/longitude grid (`drawGrid`), customizing CSS variables to earthy/vintage tones, and mapping hover animations to radar scans and compass spins instead of cosmic orbits.

@@ -60,6 +60,17 @@
       width: 100vw;
       height: 100vh;
       transition: background-color 0.4s ease, color 0.4s ease;
+      cursor: none; /* Custom gaming cursor */
+    }
+
+    /* Custom Cursor */
+    #custom-cursor {
+      width: 20px; height: 20px; border: 1.5px solid var(--glow-cyan); border-radius: 50%;
+      position: fixed; transform: translate(-50%, -50%); pointer-events: none; z-index: 10000;
+      transition: width 0.2s, height 0.2s, background-color 0.2s; box-shadow: 0 0 8px var(--glow-cyan);
+    }
+    #custom-cursor-dot {
+      width: 4px; height: 4px; background-color: #fff; border-radius: 50%; position: fixed; transform: translate(-50%, -50%); pointer-events: none; z-index: 10000;
     }
 
     /* Space Canvas */
@@ -607,9 +618,24 @@
       color: var(--text-dim);
       line-height: 1.4;
     }
+
+    /* Slide Active Animations */
+    .slide .animate-fade-in {
+      opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .slide.active-slide .animate-fade-in {
+      opacity: 1; transform: translateY(0);
+    }
+    .slide.active-slide .d-1 { transition-delay: 0.1s; }
+    .slide.active-slide .d-2 { transition-delay: 0.2s; }
+    .slide.active-slide .d-3 { transition-delay: 0.3s; }
   </style>
 </head>
 <body>
+
+  <!-- Custom Cursor -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-dot"></div>
 
   <!-- Space Orbit canvas background -->
   <canvas id="space-bg"></canvas>
@@ -641,13 +667,13 @@
   <div id="deck">
     
     <!-- SLIDE 0: HERO INTRO -->
-    <section class="slide" data-theme-index="0">
-      <header class="chrome-header">
+    <section class="slide active-slide" data-theme-index="0">
+      <header class="chrome-header animate-fade-in d-1">
         <span class="brand">WELCOME TO PORTFOLIO MATRIX</span>
         <span>STATUS // SYSTEM ONLINE</span>
       </header>
       
-      <div class="glass-card" style="max-width: 650px; margin: auto;">
+      <div class="glass-card animate-fade-in d-2" style="max-width: 650px; margin: auto;">
         <div class="kicker" style="color: var(--glow-cyan)">MISSION START</div>
         <h1 class="slide-title" id="typing-heading" style="font-size: 38px;">// HELLO WORLD</h1>
         <p class="slide-subtitle" style="margin-top: 15px;">
@@ -655,7 +681,7 @@
         </p>
       </div>
 
-      <footer class="chrome-footer">
+      <footer class="chrome-footer animate-fade-in d-3">
         <span class="nav-tip">按左右键(← →)或滚轮滑动翻页 · 移动端滑动翻页</span>
         <span>YNWELC // 2026</span>
       </footer>
@@ -760,9 +786,12 @@
       currentIdx = idx;
       deck.style.transform = `translateX(-${currentIdx * 100}vw)`;
       
-      // Update dots
+      // Update dots and active slide class
       document.querySelectorAll('.nav-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === currentIdx);
+      });
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active-slide', i === currentIdx);
       });
       
       // Hook space bg focal shifts if custom focus exists
@@ -770,6 +799,20 @@
         window.focusBg(currentIdx);
       }
     }
+
+    // Custom Cursor Logic
+    const cursor = document.getElementById('custom-cursor');
+    const cursorDot = document.getElementById('custom-cursor-dot');
+    window.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      cursorDot.style.left = e.clientX + 'px';
+      cursorDot.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .index-card, .glass-card, .theme-toggle-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.width = '30px'; cursor.style.height = '30px'; cursor.style.backgroundColor = 'rgba(0, 240, 255, 0.1)'; });
+      el.addEventListener('mouseleave', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; cursor.style.backgroundColor = 'transparent'; });
+    });
 
     // Keyboard bindings
     window.addEventListener('keydown', (e) => {

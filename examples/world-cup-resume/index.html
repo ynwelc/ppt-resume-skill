@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>绿茵战术板 // WORLD CUP RESUME</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 夺冠彩纸/绿茵场背景 Canvas -->
+  <canvas id="space-bg"></canvas>
+
+  <!-- 战术控制台 HUD -->
+  <div id="hud-ai-assistant">
+    <div class="hud-avatar">⚽</div>
+    <div class="hud-info">
+      AI MANAGER: <span>TACTICS ACTIVE</span>
+    </div>
+    <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="window.toggleTheme(event)" title="切换主客场球衣 (Toggle Theme)">
+      <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button id="nav-index-btn" class="theme-toggle-btn" title="战术面板索引" style="margin-left: 6px;">
+      <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    </button>
+    <div class="hud-popup">
+      <h4>赛事战术面板 // TACTICS BOARD</h4>
+      <p id="hud-message">正在解析绿茵战术... 请使用键盘或手势滑动以纵观全局。</p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+
+  <div id="deck">
+    
+    <!-- SLIDE 0: KICK-OFF -->
+    <section class="slide" data-theme-index="0">
+      <header class="chrome-header">
+        <span class="brand">WELCOME TO THE PITCH</span>
+        <span>STATUS // KICK-OFF</span>
+      </header>
+      <div class="glass-card" style="max-width: 650px; margin: auto;">
+        <div class="kicker" style="color: var(--glow-cyan)">MATCH START</div>
+        <h1 class="slide-title" id="typing-heading" style="font-size: 38px;">// THE PLAYMAKER</h1>
+        <p class="slide-subtitle" style="margin-top: 15px;">
+          欢迎来到我的绿茵赛场。在这里，我将通过多维度的战术视角展示我的全栈技术、核心项目实战以及开发历程。
+        </p>
+      </div>
+      <footer class="chrome-footer">
+        <span class="nav-tip">按左右键(← →)或滚轮滑动翻页 · 移动端滑动翻页</span>
+        <span>WORLD CUP THEME // 2026</span>
+      </footer>
+    </section>
+
+    <!-- SLIDE 1: Midfielder (Workflow) -->
+    <section class="slide" data-theme-index="1" style="--theme-color: var(--glow-cyan)">
+      <header class="chrome-header"><span class="brand">TACTICAL ORCHESTRATION</span><span>PROJECT 01 OF 04</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="auto">
+          <div class="card-animation"></div>
+          <div class="kicker">MIDFIELDER</div>
+          <h2 class="slide-title" style="font-size: 26px;">Code-Playmaker</h2>
+          <p class="slide-subtitle">基于多智能体工作流驱动的赛场战术级代码验证平台，像中场大师一样调度代码构建。</p>
+          <div class="badge-container"><span class="tech-badge">Java 21</span><span class="tech-badge">LangGraph4j</span></div>
+          <a href="#" class="btn-primary" style="margin-top: 2vh">MATCH HIGHLIGHTS</a>
+        </div>
+        <div class="glass-card" style="height: 100%; display: flex; align-items: center; justify-content: center;">
+          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--glow-cyan); line-height: 1.8;">
+            &gt; MIDFIELD NODE INITIATED...<br>
+            &gt; SCANNING OPPONENT FORMATION...<br>
+            &gt; DISPATCHING TACTICAL PASS... [SUCCESS]
+          </div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>POSITION // MIDFIELD</span><span>PLAYMAKER // CORE</span></footer>
+    </section>
+
+    <!-- SLIDE 2: Winger (Multi-Agent) -->
+    <section class="slide" data-theme-index="2" style="--theme-color: var(--glow-gold)">
+      <header class="chrome-header"><span class="brand">TIKI-TAKA AGENT</span><span>PROJECT 02 OF 04</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="tender">
+          <div class="card-animation">
+             <!-- Used for tiki-taka triangle passing animation in CSS -->
+            <div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-center"></div>
+          </div>
+          <div class="kicker" style="color: var(--glow-gold)">WINGER</div>
+          <h2 class="slide-title" style="font-size: 26px;">Concurrent-Striker</h2>
+          <p class="slide-subtitle">利用多智能体高频并发像 Tiki-Taka 一样撕破防线，完成海量请求的动态流式生成。</p>
+          <div class="badge-container"><span class="tech-badge">Virtual Threads</span><span class="tech-badge">Concurrency</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>POSITION // WINGER</span><span>STRIKER // MULTI-AGENT</span></footer>
+    </section>
+
+    <!-- SLIDE 3: Defender (VAR RAG) -->
+    <section class="slide" data-theme-index="3" style="--theme-color: var(--glow-rose)">
+      <header class="chrome-header"><span class="brand">VAR MONITORING</span><span>PROJECT 03 OF 04</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="skin">
+          <div class="card-animation"><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div></div>
+          <div class="kicker" style="color: var(--glow-rose)">DEFENDER</div>
+          <h2 class="slide-title" style="font-size: 26px;">Vision-VAR</h2>
+          <p class="slide-subtitle">基于 ChromaDB 向量检索的智能裁判系统，确保每一次系统逻辑判定都精准无误。</p>
+          <div class="badge-container"><span class="tech-badge">RAG</span><span class="tech-badge">Vector DB</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>POSITION // DEFENDER</span><span>VAR // PRECISION</span></footer>
+    </section>
+
+    <!-- SLIDE 4: Fans (Chat) -->
+    <section class="slide" data-theme-index="4" style="--theme-color: var(--glow-emerald)">
+      <header class="chrome-header"><span class="brand">FAN ENGAGEMENT</span><span>PROJECT 04 OF 04</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="campus">
+          <div class="card-animation"><div class="chat-dot"></div><div class="chat-dot"></div><div class="chat-dot"></div></div>
+          <div class="kicker" style="color: var(--glow-emerald)">12TH MAN</div>
+          <h2 class="slide-title" style="font-size: 26px;">Cheer-Mind</h2>
+          <p class="slide-subtitle">实时互动的粉丝大本营，支持多轮对话与全双工流式响应。</p>
+          <div class="badge-container"><span class="tech-badge">FastAPI</span><span class="tech-badge">WebSocket</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>POSITION // FANS</span><span>CHEER // REALTIME</span></footer>
+    </section>
+
+  </div>
+
+  <!-- 全局战术面板 Modal -->
+  <div id="index-modal">
+    <div class="modal-header">
+      <h3>赛事战术面板 // TACTICS BOARD</h3>
+      <p>点击相应卡片直接跃迁至对应战术模块</p>
+    </div>
+    <div class="index-grid" id="modal-index-grid"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

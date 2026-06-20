@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>探索者航海图 // EXPLORER MAP RESUME</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Canvas background -->
+  <canvas id="space-bg"></canvas>
+
+  <!-- Digital Assistant HUD -->
+  <div id="hud-ai-assistant">
+    <div class="hud-avatar">🧭</div>
+    <div class="hud-info">
+      COMPASS: <span>CALIBRATED</span>
+    </div>
+    <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="window.toggleTheme(event)" title="Toggle Theme">
+      <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button id="nav-index-btn" class="theme-toggle-btn" title="地图图例" style="margin-left: 6px;">
+      <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    </button>
+    <div class="hud-popup">
+      <h4>全局勘探图例 // MAP LEGEND</h4>
+      <p id="hud-message">正在解析经纬度坐标... 请使用键盘或手势平移地图视角。</p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+
+  <div id="deck">
+    <!-- SLIDE 0 -->
+    <section class="slide" data-theme-index="0">
+      <header class="chrome-header"><span class="brand">WELCOME TO THE BASECAMP</span><span>STATUS // EXPEDITION START</span></header>
+      <div class="glass-card" style="max-width: 650px; margin: auto;">
+        <div class="kicker" style="color: var(--glow-cyan)">LAT 45° N, LONG 12° E</div>
+        <h1 class="slide-title" id="typing-heading" style="font-size: 38px;">// THE EXPLORER</h1>
+        <p class="slide-subtitle" style="margin-top: 15px;">
+          欢迎来到我的探索大本营。在这里，我将展示在技术荒野中开拓的路线图、发现的宝藏项目，以及全栈开发的探险历程。
+        </p>
+      </div>
+      <footer class="chrome-footer"><span class="nav-tip">按左右键(← →)或滚轮平移地图 · 移动端滑动</span><span>EXPLORATION MAP // 2026</span></footer>
+    </section>
+
+    <!-- SLIDE 1 -->
+    <section class="slide" data-theme-index="1" style="--theme-color: var(--glow-cyan)">
+      <header class="chrome-header"><span class="brand">WAYPOINT 01</span><span>SECTOR // ARCHITECTURE</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="auto">
+          <div class="card-animation"></div>
+          <div class="kicker">PATHFINDER</div>
+          <h2 class="slide-title" style="font-size: 26px;">Terrain-Mapper</h2>
+          <p class="slide-subtitle">全景拓扑映射系统，能够像探路者一样自动扫描并生成工作流架构地图。</p>
+          <div class="badge-container"><span class="tech-badge">Java 21</span><span class="tech-badge">Graph Builder</span></div>
+          <a href="#" class="btn-primary" style="margin-top: 2vh">OPEN COMPASS</a>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>ELEVATION // 1500M</span><span>PATH // CLEAR</span></footer>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-theme-index="2" style="--theme-color: var(--glow-gold)">
+      <header class="chrome-header"><span class="brand">WAYPOINT 02</span><span>SECTOR // MULTI-AGENT</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="tender">
+          <div class="card-animation"></div>
+          <div class="kicker" style="color: var(--glow-gold)">CARAVAN</div>
+          <h2 class="slide-title" style="font-size: 26px;">Expedition-Fleet</h2>
+          <p class="slide-subtitle">基于虚拟线程组建的探险车队系统，多节点协同并发，跨越数据荒漠。</p>
+          <div class="badge-container"><span class="tech-badge">Virtual Threads</span><span class="tech-badge">Agent Fleet</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>ELEVATION // 2100M</span><span>FLEET // SYNCED</span></footer>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-theme-index="3" style="--theme-color: var(--glow-teal)">
+      <header class="chrome-header"><span class="brand">WAYPOINT 03</span><span>SECTOR // DATA MINE</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="skin">
+          <div class="card-animation"></div>
+          <div class="kicker" style="color: var(--glow-teal)">TREASURE HUNTER</div>
+          <h2 class="slide-title" style="font-size: 26px;">Relic-Search</h2>
+          <p class="slide-subtitle">深埋知识宝库的向量检索引擎，利用 ChromaDB 定位每一块遗迹碎片（数据）。</p>
+          <div class="badge-container"><span class="tech-badge">RAG</span><span class="tech-badge">Vector DB</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>ELEVATION // DEEP CAVE</span><span>RELIC // FOUND</span></footer>
+    </section>
+  </div>
+
+  <div id="index-modal">
+    <div class="modal-header">
+      <h3>全局勘探图例 // MAP LEGEND</h3>
+      <p>点击相应坐标点进行空间跃迁，直接抵达目的地。</p>
+    </div>
+    <div class="index-grid" id="modal-index-grid"></div>
+  </div>
+
+  <!-- Include custom JS -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>深海潜航 // OCEAN ABYSS RESUME</title>
+  <style>
+    /* =========================================================================
+       1. DESIGN SYSTEM VARIABLES (OCEAN THEME)
+       ========================================================================= */
+    :root {
+      /* Dark Theme: Abyssal Trench */
+      --bg-dark: #010a15;
+      --card-bg: rgba(1, 10, 21, 0.55);
+      --card-border: rgba(0, 245, 255, 0.15);
+      --text: #e0f7fa;
+      --text-dim: #80deea;
+      --text-muted: #4dd0e1;
+      
+      /* Glowing Accent Colors: Bioluminescence */
+      --glow-cyan: #00f5ff;   /* Bioluminescent Cyan */
+      --glow-gold: #ff7f50;   /* Coral Pink */
+      --glow-rose: #ff4500;   /* Deep Orange */
+      --glow-teal: #20b2aa;   /* Light Sea Green */
+      --glow-emerald: #00fa9a; /* Medium Spring Green */
+      --glow-purple: #9370db;  /* Medium Purple */
+      
+      --font-heading: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+      --font-body: 'Noto Sans SC', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body.light-theme {
+      /* Light Theme: Shallow Reef / Crystal Clear Water */
+      --bg-dark: #e0f7fa; 
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(0, 139, 139, 0.2);
+      --text: #004d40;
+      --text-dim: #00695c;
+      --text-muted: #00897b;
+      
+      --glow-cyan: #008b8b;   /* Dark Cyan */
+      --glow-gold: #d84315;   /* Rust Coral */
+      --glow-rose: #c62828;
+      --glow-teal: #00695c;
+      --glow-emerald: #2e7d32;
+      --glow-purple: #4527a0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      transition: background-color 0.6s ease, color 0.6s ease;
+    }
+
+    canvas#space-bg {
+      position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+    }
+
+    #deck {
+      position: fixed; inset: 0; display: flex; flex-wrap: nowrap;
+      transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 10; will-change: transform;
+    }
+
+    .slide {
+      width: 100vw; height: 100vh; flex: 0 0 100vw; position: relative;
+      padding: 8vh 6vw; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+    }
+    
+    /* Deep water gradient overlay */
+    .slide::before {
+      content: ""; position: absolute; inset: 0; z-index: -1;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.05) 0%, rgba(1, 10, 21, 0.8) 100%);
+      pointer-events: none;
+    }
+    body.light-theme .slide::before {
+      background: radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.2) 0%, rgba(224, 247, 250, 0.7) 100%);
+    }
+
+    /* Water-like rounded glass cards */
+    .glass-card {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px;
+      padding: 3.5vh 3vw; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: border-color 0.4s, box-shadow 0.4s, transform 0.5s ease;
+    }
+    body.light-theme .glass-card { box-shadow: 0 15px 35px rgba(0, 139, 139, 0.1), inset 0 1px 0 rgba(255,255,255,0.5); }
+
+    .grid-split {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: center; flex: 1; min-height: 0;
+    }
+    @media (max-width: 768px) {
+      .grid-split { grid-template-columns: 1fr; overflow-y: auto; padding-right: 10px; }
+    }
+
+    .chrome-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted); border-bottom: 1px solid rgba(0, 245, 255, 0.15); padding-bottom: 1.5vh;
+    }
+    .chrome-header .brand { color: var(--glow-cyan); font-weight: 600; }
+    .chrome-footer {
+      display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px;
+      color: var(--text-muted); letter-spacing: 0.1em; border-top: 1px solid rgba(0, 245, 255, 0.15); padding-top: 1.5vh;
+    }
+
+    .kicker {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--theme-color, var(--glow-cyan)); margin-bottom: 1vh; display: flex; align-items: center; gap: 8px;
+    }
+    .kicker::before {
+      content: "◯"; display: inline-block; font-size: 10px;
+      color: currentColor; text-shadow: 0 0 8px currentColor;
+    }
+    .slide-title {
+      font-family: var(--font-heading); font-size: clamp(24px, 3.5vw, 48px); font-weight: 700; line-height: 1.2;
+      background: linear-gradient(180deg, #ffffff 30%, var(--theme-color, var(--glow-cyan)) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    body.light-theme .slide-title {
+      background: linear-gradient(180deg, #004d40 30%, var(--theme-color, var(--glow-cyan)) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .slide-subtitle { font-size: clamp(13px, 1.2vw, 16px); color: var(--text-dim); margin-top: 1vh; font-weight: 300; line-height: 1.6; }
+
+    .badge-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 2vh 0; }
+    .tech-badge {
+      font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border-radius: 12px;
+      background: rgba(0, 245, 255, 0.08); border: 1px solid rgba(0, 245, 255, 0.2); color: var(--text-dim);
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--theme-color, var(--glow-cyan)) 0%, transparent 100%);
+      border: 1px solid var(--theme-color, var(--glow-cyan)); color: #fff; font-family: var(--font-heading); font-size: 12px;
+      text-decoration: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 0 15px var(--theme-color, var(--glow-cyan)); transform: translateY(-2px); }
+
+    /* HUD */
+    #hud-ai-assistant {
+      position: fixed; top: 2.5vh; right: 6vw; z-index: 1000; display: flex; align-items: center; gap: 12px;
+      background: rgba(1, 10, 21, 0.7); border: 1px solid var(--glow-cyan); border-radius: 30px;
+      padding: 5px 14px 5px 6px; backdrop-filter: blur(12px); box-shadow: 0 0 15px rgba(0, 245, 255, 0.2); transition: all 0.3s ease;
+    }
+    body.light-theme #hud-ai-assistant { background: rgba(255, 255, 255, 0.85); }
+    .hud-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 245, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid var(--glow-cyan); box-shadow: inset 0 0 8px var(--glow-cyan); }
+    .hud-info { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+    .hud-info span { color: var(--glow-cyan); font-weight: 600; }
+    
+    .theme-toggle-btn { background: transparent; border: 1px solid rgba(0, 245, 255, 0.3); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--glow-cyan); cursor: pointer; transition: all 0.3s; padding: 0; }
+    .theme-toggle-btn:hover { background: rgba(0, 245, 255, 0.2); box-shadow: 0 0 8px var(--glow-cyan); }
+
+    .hud-popup {
+      position: absolute; top: 48px; right: 0; width: 260px; background: rgba(1, 10, 21, 0.9);
+      border: 1px solid var(--glow-cyan); border-radius: 16px; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.3s; pointer-events: none;
+      backdrop-filter: blur(10px);
+    }
+    body.light-theme .hud-popup { background: rgba(255, 255, 255, 0.95); }
+    #hud-ai-assistant:hover .hud-popup { opacity: 1; visibility: visible; transform: translateY(0); }
+    .hud-popup h4 { font-size: 11px; color: var(--text); margin-bottom: 4px; }
+    .hud-popup p { font-size: 10px; color: var(--text-dim); line-height: 1.4; }
+
+    #nav-dots { position: fixed; left: 50%; bottom: 3vh; transform: translateX(-50%); z-index: 1000; display: flex; gap: 12px; padding: 8px 16px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 245, 255, 0.1); border-radius: 20px; backdrop-filter: blur(10px); }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(0, 245, 255, 0.2); border: 0; cursor: pointer; transition: all 0.3s; }
+    .nav-dot.active { background-color: var(--glow-cyan); transform: scale(1.5); box-shadow: 0 0 10px var(--glow-cyan); }
+
+    /* Hover Animations (Ocean Themed) */
+    @keyframes sonar-ping { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+    @keyframes bubble-rise { 0% { transform: translateY(0) scale(0.8); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-40px) scale(1.2); opacity: 0; } }
+    @keyframes fish-swim { 0% { transform: translateX(-20px) translateY(0); opacity: 0; } 50% { opacity: 1; transform: translateX(30px) translateY(-10px); } 100% { transform: translateX(80px) translateY(5px); opacity: 0; } }
+    
+    .project-card { position: relative; overflow: hidden; --color-auto: var(--glow-cyan); --color-tender: var(--glow-gold); --color-skin: var(--glow-teal); }
+    .project-card .card-animation { position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.5s ease; }
+
+    /* Sonar (Auto) */
+    .project-card[data-project="auto"] .card-animation { top: 50%; left: 50%; width: 40px; height: 40px; transform: translate(-50%, -50%); }
+    .project-card[data-project="auto"]:hover .card-animation { opacity: 1; }
+    .project-card[data-project="auto"] .card-animation::before, .project-card[data-project="auto"] .card-animation::after { content: ''; position: absolute; inset: 0; border: 2px solid var(--color-auto); border-radius: 50%; animation: sonar-ping 2s cubic-bezier(0, 0.2, 0.8, 1) infinite; }
+    .project-card[data-project="auto"] .card-animation::after { animation-delay: 1s; }
+
+    /* School of Fish (Multi-agent) */
+    .project-card[data-project="tender"] .card-animation { inset: 0; overflow: hidden; border-radius: inherit; }
+    .project-card[data-project="tender"]:hover .card-animation { opacity: 1; }
+    .project-card[data-project="tender"] .card-animation .fish { position: absolute; width: 6px; height: 3px; background: var(--color-tender); border-radius: 50%; top: 50%; left: 10%; animation: fish-swim 3s linear infinite; }
+    .project-card[data-project="tender"] .card-animation .fish:nth-child(2) { top: 40%; animation-delay: 0.5s; animation-duration: 2.5s; }
+    .project-card[data-project="tender"] .card-animation .fish:nth-child(3) { top: 60%; animation-delay: 1.2s; animation-duration: 3.2s; }
+
+    /* Bubbles (Chat) */
+    .project-card[data-project="campus"] .card-animation { bottom: 10px; right: 20px; width: 30px; height: 50px; }
+    .project-card[data-project="campus"]:hover .card-animation { opacity: 1; }
+    .project-card[data-project="campus"] .card-animation .bubble { position: absolute; bottom: 0; width: 6px; height: 6px; border: 1px solid var(--glow-cyan); border-radius: 50%; }
+    .project-card[data-project="campus"] .card-animation .bubble:nth-child(1) { left: 0; animation: bubble-rise 2s ease-in infinite; animation-delay: 0s; }
+    .project-card[data-project="campus"] .card-animation .bubble:nth-child(2) { left: 12px; width: 4px; height: 4px; animation: bubble-rise 1.5s ease-in infinite; animation-delay: 0.4s; }
+    .project-card[data-project="campus"] .card-animation .bubble:nth-child(3) { left: 24px; width: 8px; height: 8px; animation: bubble-rise 2.2s ease-in infinite; animation-delay: 0.8s; }
+
+    /* Floating transform for cards to simulate buoyancy */
+    .slide[data-theme-index="0"] .glass-card:hover { border-color: var(--glow-cyan); box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2); transform: translateY(-8px); }
+    .slide[data-theme-index="1"] .glass-card:hover { border-color: var(--glow-cyan); box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2); transform: translateY(-8px); }
+    .slide[data-theme-index="2"] .glass-card:hover { border-color: var(--glow-gold); box-shadow: 0 20px 40px rgba(255, 127, 80, 0.2); transform: translateY(-6px) rotate(-1deg); }
+    .slide[data-theme-index="3"] .glass-card:hover { border-color: var(--glow-teal); box-shadow: 0 20px 40px rgba(32, 178, 170, 0.2); transform: translateY(-8px); }
+
+    /* Modal */
+    #index-modal { position: fixed; inset: 0; background: rgba(1, 10, 21, 0.9); z-index: 10000; backdrop-filter: blur(25px); display: flex; flex-direction: column; padding: 6vh 8vw; opacity: 0; visibility: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    #index-modal.open { opacity: 1; visibility: visible; }
+    .modal-header { margin-bottom: 4vh; border-bottom: 1px solid rgba(0, 245, 255, 0.15); padding-bottom: 2vh; }
+    .modal-header h3 { font-family: var(--font-heading); font-size: 24px; color: var(--glow-cyan); }
+    .modal-header p { font-size: 12px; color: var(--text-dim); margin-top: 5px; }
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; flex: 1; overflow-y: auto; }
+    .index-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 245, 255, 0.15); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s; }
+    .index-card:hover { background: rgba(0, 245, 255, 0.1); border-color: var(--glow-cyan); transform: translateY(-4px); }
+    .index-card.active { border-color: var(--glow-cyan); background: rgba(0, 245, 255, 0.05); box-shadow: 0 0 15px rgba(0, 245, 255, 0.2); }
+    .index-card h4 { font-size: 14px; margin-bottom: 4px; color: #fff; }
+    .index-card p { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <canvas id="space-bg"></canvas>
+
+  <div id="hud-ai-assistant">
+    <div class="hud-avatar">🤿</div>
+    <div class="hud-info">
+      SONAR: <span>ONLINE</span>
+    </div>
+    <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="window.toggleTheme(event)" title="Toggle Depth">
+      <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button id="nav-index-btn" class="theme-toggle-btn" title="声呐坐标" style="margin-left: 6px;">
+      <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    </button>
+    <div class="hud-popup">
+      <h4>深海声呐阵列 // SONAR ARRAY</h4>
+      <p id="hud-message">正在探测深海地形... 请滑动或使用方向键探索海沟。</p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+
+  <div id="deck">
+    
+    <!-- SLIDE 0 -->
+    <section class="slide" data-theme-index="0">
+      <header class="chrome-header">
+        <span class="brand">WELCOME TO THE ABYSS</span>
+        <span>STATUS // DIVE START</span>
+      </header>
+      <div class="glass-card" style="max-width: 650px; margin: auto;">
+        <div class="kicker" style="color: var(--glow-cyan)">DEPTH: 10,900M</div>
+        <h1 class="slide-title" id="typing-heading" style="font-size: 38px;">// THE AQUANAUT</h1>
+        <p class="slide-subtitle" style="margin-top: 15px;">
+          欢迎来到我的深海基站。在这里，我将展示如马里亚纳海沟般深邃的全栈技术栈、硬核底层项目，以及探索未知代码海域的历程。
+        </p>
+      </div>
+      <footer class="chrome-footer">
+        <span class="nav-tip">按左右键(← →)或滚轮下潜 · 移动端滑动探索</span>
+        <span>OCEAN THEME // 2026</span>
+      </footer>
+    </section>
+
+    <!-- SLIDE 1 -->
+    <section class="slide" data-theme-index="1" style="--theme-color: var(--glow-cyan)">
+      <header class="chrome-header"><span class="brand">SUBMARINE ARCHITECTURE</span><span>SECTOR 01</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="auto">
+          <div class="card-animation"></div>
+          <div class="kicker">SONAR PING</div>
+          <h2 class="slide-title" style="font-size: 26px;">Deep-Sonar Mapper</h2>
+          <p class="slide-subtitle">深海声呐级的工作流编排与代码映射系统，能在漆黑的业务逻辑中精确定位并构建架构。</p>
+          <div class="badge-container"><span class="tech-badge">Java 21</span><span class="tech-badge">Workflow Automation</span></div>
+          <a href="#" class="btn-primary" style="margin-top: 2vh">INITIATE SCAN</a>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>PRESSURE // NOMINAL</span><span>SYSTEM // SECURE</span></footer>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-theme-index="2" style="--theme-color: var(--glow-gold)">
+      <header class="chrome-header"><span class="brand">BIOLUMINESCENT SWARM</span><span>SECTOR 02</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="tender">
+          <div class="card-animation"><div class="fish"></div><div class="fish"></div><div class="fish"></div></div>
+          <div class="kicker" style="color: var(--glow-gold)">SCHOOL OF FISH</div>
+          <h2 class="slide-title" style="font-size: 26px;">Swarm-Agent Fleet</h2>
+          <p class="slide-subtitle">模仿深海鱼群的高频并发多智能体系统，依靠虚拟线程实现群体智能与流式协作。</p>
+          <div class="badge-container"><span class="tech-badge">Virtual Threads</span><span class="tech-badge">Agent Swarm</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>CURRENT // STRONG</span><span>SWARM // SYNCHRONIZED</span></footer>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-theme-index="3" style="--theme-color: var(--glow-teal)">
+      <header class="chrome-header"><span class="brand">ABYSSAL TREASURE</span><span>SECTOR 03</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="campus">
+          <div class="card-animation"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div></div>
+          <div class="kicker" style="color: var(--glow-teal)">THERMAL VENT</div>
+          <h2 class="slide-title" style="font-size: 26px;">Hydro-Chat Network</h2>
+          <p class="slide-subtitle">深海热泉旁的实时通信枢纽。支持全双工 WebSocket，像上升的气泡一样提供流式反馈。</p>
+          <div class="badge-container"><span class="tech-badge">WebSocket</span><span class="tech-badge">Real-time IO</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>VENT // ACTIVE</span><span>COMMS // ONLINE</span></footer>
+    </section>
+
+  </div>
+
+  <div id="index-modal">
+    <div class="modal-header">
+      <h3>深海声呐阵列 // SONAR ARRAY</h3>
+      <p>点击相应坐标点进行深潜跃迁，直接抵达海沟底部。</p>
+    </div>
+    <div class="index-grid" id="modal-index-grid"></div>
+  </div>
+
+  <script>
+    let currentIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const deck = document.getElementById('deck');
+    const navDotsContainer = document.getElementById('nav-dots');
+
+    function initNav() {
+      navDotsContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => jumpToSlide(i));
+        navDotsContainer.appendChild(dot);
+      }
+      const modalGrid = document.getElementById('modal-index-grid');
+      modalGrid.innerHTML = '';
+      slides.forEach((slide, i) => {
+        const title = slide.querySelector('.slide-title')?.textContent || 'Hero';
+        const subtitle = slide.querySelector('.slide-subtitle')?.textContent || '';
+        const card = document.createElement('div');
+        card.className = 'index-card';
+        card.innerHTML = `<h4>${title}</h4><p>${subtitle.substring(0, 40)}...</p>`;
+        card.addEventListener('click', () => { toggleIndexModal(); jumpToSlide(i); });
+        modalGrid.appendChild(card);
+      });
+    }
+
+    function jumpToSlide(idx) {
+      if (idx < 0 || idx >= totalSlides) return;
+      currentIdx = idx;
+      deck.style.transform = `translateX(-${currentIdx * 100}vw)`;
+      document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIdx));
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleIndexModal();
+      else if (e.key === 'ArrowRight' || e.key === ' ') jumpToSlide(currentIdx + 1);
+      else if (e.key === 'ArrowLeft') jumpToSlide(currentIdx - 1);
+    });
+
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    window.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(diffX) > 85) { if (diffX < 0) jumpToSlide(currentIdx + 1); else jumpToSlide(currentIdx - 1); }
+    }, { passive: true });
+
+    let accumWheel = 0;
+    let wheelTimer = null;
+    window.addEventListener('wheel', (e) => {
+      accumWheel += e.deltaY;
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => {
+        if (Math.abs(accumWheel) > 60) { if (accumWheel > 0) jumpToSlide(currentIdx + 1); else jumpToSlide(currentIdx - 1); }
+        accumWheel = 0;
+      }, 100);
+    }, { passive: true });
+
+    const modal = document.getElementById('index-modal');
+    function toggleIndexModal() {
+      modal.classList.toggle('open');
+      if (modal.classList.contains('open')) {
+        document.querySelectorAll('.index-card').forEach((card, i) => card.classList.toggle('active', i === currentIdx));
+      }
+    }
+    document.getElementById('nav-index-btn').addEventListener('click', (e) => { e.stopPropagation(); toggleIndexModal(); });
+    document.querySelectorAll('.nav-tip').forEach(tip => { tip.style.cursor = 'pointer'; tip.addEventListener('click', (e) => { e.stopPropagation(); toggleIndexModal(); }); });
+
+    window.toggleTheme = function(e) { if (e) e.stopPropagation(); document.body.classList.toggle('light-theme'); }
+
+    // Ocean Particles Background (Rising Bubbles and Plankton)
+    const canvas = document.getElementById('space-bg');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 3 + 1,
+          speedY: Math.random() * 1.5 + 0.5,
+          speedX: (Math.random() - 0.5) * 0.5,
+          isBubble: Math.random() > 0.6,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: Math.random() * 0.05 + 0.01
+        });
+      }
+    }
+
+    function animateBg() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isLight = document.body.classList.contains('light-theme');
+      
+      particles.forEach(p => {
+        p.wobble += p.wobbleSpeed;
+        const driftX = Math.sin(p.wobble) * 1.5;
+        
+        ctx.beginPath();
+        ctx.arc(p.x + driftX, p.y, p.radius, 0, Math.PI * 2);
+        
+        if (p.isBubble) {
+          ctx.strokeStyle = isLight ? 'rgba(0, 139, 139, 0.4)' : 'rgba(0, 245, 255, 0.4)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = isLight ? 'rgba(46, 125, 50, 0.3)' : 'rgba(0, 250, 154, 0.3)'; // Plankton green
+          ctx.fill();
+        }
+        
+        p.y -= p.speedY; // Rise up like bubbles
+        p.x += p.speedX;
+        
+        if (p.y < -10) {
+          p.y = canvas.height + 10;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(animateBg);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    window.addEventListener('DOMContentLoaded', () => { initNav(); initCanvas(); animateBg(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蒸汽工坊 // STEAMPUNK WORKSHOP</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 自定义光标 -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-dot"></div>
+
+  <!-- 蒸汽与火星 Canvas 背景 -->
+  <canvas id="space-bg"></canvas>
+
+  <!-- 机械控制台 HUD -->
+  <div id="hud-ai-assistant">
+    <div class="hud-avatar">⚙️</div>
+    <div class="hud-info">
+      VALVE: <span>PRESSURIZED</span>
+    </div>
+    <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="window.toggleTheme(event)" title="燃煤/冷凝模式切换">
+      <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button id="nav-index-btn" class="theme-toggle-btn" title="工坊蓝图" style="margin-left: 6px;">
+      <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    </button>
+    <div class="hud-popup">
+      <h4>机械蓝图总览 // BLUEPRINTS</h4>
+      <p id="hud-message">齿轮运转正常，压力稳定。使用键盘或触控板巡视整个动力车间。</p>
+    </div>
+  </div>
+
+  <div id="nav-dots"></div>
+
+  <div id="deck">
+    
+    <!-- SLIDE 0: MAIN ENGINE -->
+    <section class="slide" data-theme-index="0">
+      <header class="chrome-header animate-fade-in d-1">
+        <span class="brand">WELCOME TO THE WORKSHOP</span>
+        <span>STATUS // ENGINE IGNITED</span>
+      </header>
+      <div class="glass-card animate-fade-in d-2" style="max-width: 650px; margin: auto;">
+        <div class="kicker" style="color: var(--glow-cyan)">STEAM AHEAD</div>
+        <h1 class="slide-title" id="typing-heading" style="font-size: 38px;">// THE MECHANIC</h1>
+        <p class="slide-subtitle" style="margin-top: 15px;">
+          欢迎来到我的蒸汽工坊。在这里，我将展示如精密齿轮般咬合的全栈技术、复杂的架构传动机制，以及我的重工业级开发历程。
+        </p>
+      </div>
+      <footer class="chrome-footer animate-fade-in d-3">
+        <span class="nav-tip">按左右键(← →)或滚轮巡视车间 · 移动端滑动探索</span>
+        <span>STEAMPUNK THEME // 2026</span>
+      </footer>
+    </section>
+
+    <!-- SLIDE 1: Workflow (Gear Transmission) -->
+    <section class="slide" data-theme-index="1" style="--theme-color: var(--glow-cyan)">
+      <header class="chrome-header"><span class="brand">GEAR TRANSMISSION</span><span>SECTOR 01</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="auto">
+          <div class="card-animation">
+            <div class="cog big-cog">⚙</div>
+            <div class="cog small-cog">⚙</div>
+          </div>
+          <div class="kicker">MAIN DRIVE</div>
+          <h2 class="slide-title" style="font-size: 26px;">Auto-Gear Engine</h2>
+          <p class="slide-subtitle">精密的自动构建流水线，如同互相咬合的巨型齿轮组，一丝不苟地传动每一个代码审查任务。</p>
+          <div class="badge-container"><span class="tech-badge">Java 21</span><span class="tech-badge">Workflow Automation</span></div>
+          <a href="#" class="btn-primary" style="margin-top: 2vh">ENGAGE GEARS</a>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>PRESSURE // NOMINAL</span><span>ROTATION // STEADY</span></footer>
+    </section>
+
+    <!-- SLIDE 2: Multi-agent (Pressure Valve) -->
+    <section class="slide" data-theme-index="2" style="--theme-color: var(--glow-gold)">
+      <header class="chrome-header"><span class="brand">PRESSURE VALVE</span><span>SECTOR 02</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="tender">
+          <div class="card-animation">
+            <div class="gauge-face"></div>
+            <div class="gauge-needle"></div>
+          </div>
+          <div class="kicker" style="color: var(--glow-gold)">CONCURRENCY</div>
+          <h2 class="slide-title" style="font-size: 26px;">Steam-Agent Fleet</h2>
+          <p class="slide-subtitle">多智能体并发系统，如同释放多余压力的泄压阀，利用虚拟线程完美处理瞬时高并发蒸汽爆发。</p>
+          <div class="badge-container"><span class="tech-badge">Virtual Threads</span><span class="tech-badge">Multi-Agent</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>VALVES // OPEN</span><span>THROTTLE // MAX</span></footer>
+    </section>
+
+    <!-- SLIDE 3: RAG (Clockwork Matrix) -->
+    <section class="slide" data-theme-index="3" style="--theme-color: var(--glow-rose)">
+      <header class="chrome-header"><span class="brand">CLOCKWORK MATRIX</span><span>SECTOR 03</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="skin">
+          <div class="card-animation">
+             <!-- Sparks -->
+             <div class="spark"></div><div class="spark"></div><div class="spark"></div>
+          </div>
+          <div class="kicker" style="color: var(--glow-rose)">VECTOR CORE</div>
+          <h2 class="slide-title" style="font-size: 26px;">Clockwork-RAG</h2>
+          <p class="slide-subtitle">如同钟表般精确的向量数据库检索，通过 ChromaDB 为大模型提供如齿轮咬合般精准的上下文提示。</p>
+          <div class="badge-container"><span class="tech-badge">ChromaDB</span><span class="tech-badge">RAG</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>CLOCKWORK // TICKING</span><span>PRECISION // HIGH</span></footer>
+    </section>
+
+    <!-- SLIDE 4: Chat (Telegraph) -->
+    <section class="slide" data-theme-index="4" style="--theme-color: var(--glow-emerald)">
+      <header class="chrome-header"><span class="brand">TELEGRAPH HUB</span><span>SECTOR 04</span></header>
+      <div class="grid-split">
+        <div class="glass-card project-card" data-project="campus">
+          <div class="card-animation">
+             <div class="morse-dot"></div><div class="morse-dash"></div><div class="morse-dot"></div>
+          </div>
+          <div class="kicker" style="color: var(--glow-emerald)">COMMUNICATIONS</div>
+          <h2 class="slide-title" style="font-size: 26px;">Telegraph-Mind</h2>
+          <p class="slide-subtitle">古老却高效的实时通讯枢纽，通过全双工的 WebSocket 像电报机一样发送流式字符响应。</p>
+          <div class="badge-container"><span class="tech-badge">WebSocket</span><span class="tech-badge">Real-time IO</span></div>
+        </div>
+      </div>
+      <footer class="chrome-footer"><span>TELEGRAPH // ONLINE</span><span>SIGNAL // STRONG</span></footer>
+    </section>
+
+  </div>
+
+  <!-- 全局战术面板 Modal -->
+  <div id="index-modal">
+    <div class="modal-header">
+      <h3>工坊蓝图总览 // BLUEPRINTS</h3>
+      <p>点击相应坐标点拉下摇杆，直接降落至目标车间。</p>
+    </div>
+    <div class="index-grid" id="modal-index-grid"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
